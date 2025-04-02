@@ -108,7 +108,7 @@ WARREN'S SQUADS
 
 warren = {} 
 warren["teamwins"] = [["Mets", 121],["Rangers", 140],["Padres", 135],["Reds", 113],["Nationals", 120]]
-warren["pitcherwins"] = [["Sale", 519242],["Fried", 670770],["Brown", 686613],["Miller", 682243]]
+warren["pitcherwins"] = [["Sale", 519242],["Fried", 608331],["Brown", 686613],["Miller", 682243]]
 warren["homers"] = [["Soto", 665742],["Santander", 623993],["Vlad Jr.", 665489],["Vientos", 668901]]
 
 '''
@@ -148,11 +148,11 @@ for i in range(6):
    teamname   = standings[200+i]['teams'][j]['name']
    teamwins   = standings[200+i]['teams'][j]['w']
    teamlosses = standings[200+i]['teams'][j]['l']
-   winloss.append((teamname, teamwins, teamlosses, team_id))
+#   winloss.append((teamname, teamwins, teamlosses, team_id))
 
 # make a dict here instead?
-#   entry = { 'id': team_id, 'name': teamname, 'wins': teamwins, 'losses': teamlosses }
-   
+   entry = { team_id:  {'name': teamname, 'wins': teamwins, 'losses': teamlosses} }
+   wldict.update(entry)
 #   teampace   = str(round((teamwins / (teamwins+teamlosses)) * 162.0, 2))
 #   line       = totals[team_id]['line']
 #   print(totals[team_id]['team'])
@@ -164,12 +164,11 @@ print("<pre>")
 '''
 loops
 '''
-
-for i in range(3):
+print(wldict)
+for i in range(5):
  playername = playernames[i]
  print("-- " + playername + " HOMERS --")
-# tot = 0
- for x in players[i]['homers']:
+ for x in players[i]['homers']:    
   num = mlb.player_stat_data(x[1],'hitting','season')['stats'][0]['stats']['homeRuns']
   x.append(num)
 
@@ -182,8 +181,8 @@ for i in range(3):
  print("total homers:", tot)
 
  print("-- " + playername + " PITCHER WINS --")
- #tot = 0
  for x in players[i]['pitcherwins']:
+
   num = mlb.player_stat_data(x[1],'pitching','season')['stats'][0]['stats']['wins']
   x.append(num)
 
@@ -199,17 +198,19 @@ for i in range(3):
 # right now it ends up going by team_id alphanumerically. so iterate across ^^^^ rather than
 # across winloss
  print("--", playername, "TEAM WINS --")
- tot=0
- for x in winloss:
+ #for x in winloss:
   # check team id against list of teams each player owns
-  if (x[3] in [z[1] for z in players[i]["teamwins"]]):
-   print("The", x[0], "have", x[1], "wins.")
-   tot+=x[1]
- print(tot, "total team wins\n")
+ # if (x[3] in [z[1] for z in players[i]["teamwins"]]):
+ #  print("The", x[0], "have", x[1], "wins.")
 
 #make this work by using wldict
+ tot=0
  for team in players[i]['teamwins']:
-     if (team[1] in [z[3] for z in winloss]):
-         print(team, "yep")
+     name=wldict[team[1]]['name']
+     wins=wldict[team[1]]['wins']
+     tot+=wins
+     print("The", name, "have", wins, "wins." )
+ print(tot, "total team wins\n")
+
 #stupid html formatting for now
 print("</pre>")
