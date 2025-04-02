@@ -121,7 +121,7 @@ SPENDER'S SQUADS
 spender = {} 
 spender["teamwins"] = [["Dodgers", 119],["Asstros", 117],["Twins", 142],["Rays", 139],["Giants", 137]]
 spender["pitcherwins"] = [["Valdez", 664285],["Castillo", 622491],["Cease", 656302],["Crochet", 676979]]
-spender["homers"] = [["Yordan", 670541],["Alonso", 624413],["Devers", 646240]]#,["Henderson", 683002]] gunnar needs to play a game
+spender["homers"] = [["Yordan", 670541],["Alonso", 624413],["Devers", 646240]],["Henderson", 683002]] #gunnar needs to play a game
 
 
 
@@ -159,28 +159,28 @@ for i in range(6):
 #   print(teamname, teamwins, '-', teamlosses, 'pace:', teampace, 'line:', totals[team_id]['ou'],line)
 
 #stupid html formatting for now
-print("<pre>")
+print("<link href=css/ibgr.css rel=stylesheet type='text/css'>")
+print("<div class=\"preformatted\">")
 
 '''
 loops
 '''
-print(wldict)
-for i in range(5):
+for i in range(4): #change to 5 after thursday rather than trying to debug gunnar
  playername = playernames[i]
- print("-- " + playername + " HOMERS --")
+ print("<h1> " + playername + " HOMERS </h1>")
  for x in players[i]['homers']:    
   num = mlb.player_stat_data(x[1],'hitting','season')['stats'][0]['stats']['homeRuns']
   x.append(num)
 
  players[i]['homers']= sorted(players[i]['homers'], key=lambda i: i[2], reverse=True)
  tot=players[i]['homers'][0][2]+players[i]['homers'][1][2]
- print(players[i]['homers'][0][0], players[i]['homers'][0][2])
- print(players[i]['homers'][1][0], players[i]['homers'][1][2])
- print("<s>", players[i]['homers'][2][0], players[i]['homers'][2][2],"</s>")
- print("<s>", players[i]['homers'][3][0], players[i]['homers'][3][2],"</s>")
- print("total homers:", tot)
+ print("<ol><li>" + players[i]['homers'][0][0], players[i]['homers'][0][2], "</li>")
+ print("<li>" + players[i]['homers'][1][0], players[i]['homers'][1][2], "</li>")
+ print("<li><s>" + players[i]['homers'][2][0], str(players[i]['homers'][2][2]) + "</s></li>")
+ print("<li><s>" + players[i]['homers'][3][0], str(players[i]['homers'][3][2]) + "</s></li></ol>")
+ print("<p class=\"tot\">total homers:", str(tot) + "</p>")
 
- print("-- " + playername + " PITCHER WINS --")
+ print("<h1> " + playername + " PITCHER WINS </h1>")
  for x in players[i]['pitcherwins']:
 
   num = mlb.player_stat_data(x[1],'pitching','season')['stats'][0]['stats']['wins']
@@ -188,29 +188,20 @@ for i in range(5):
 
  players[i]['pitcherwins']=sorted(players[i]['pitcherwins'], key=lambda i: i[2],reverse=True)
  tot=players[i]['pitcherwins'][0][2]+players[i]['pitcherwins'][1][2]
- print(players[i]['pitcherwins'][0][0], players[i]['pitcherwins'][0][2])
- print(players[i]['pitcherwins'][1][0], players[i]['pitcherwins'][1][2])
- print("<s>", players[i]['pitcherwins'][2][0], players[i]['pitcherwins'][2][2],"</s>")
- print("<s>", players[i]['pitcherwins'][3][0], players[i]['pitcherwins'][3][2],"</s>")
- print("total pitcher wins:", tot)
+ print("<ol><li>" + players[i]['pitcherwins'][0][0], players[i]['pitcherwins'][0][2], "</li>")
+ print("<li>" + players[i]['pitcherwins'][1][0], players[i]['pitcherwins'][1][2], "</li>")
+ print("<li><s>" + players[i]['pitcherwins'][2][0], str(players[i]['pitcherwins'][2][2]) + "</s></li>")
+ print("<li><s>" + players[i]['pitcherwins'][3][0], str(players[i]['pitcherwins'][3][2]) + "</s></li></ol>")
+ print("<p class=\"tot\">total pitcher wins:", str(tot) + "</p>")
 
-#change this so the order follows the draft order established in players[i]['teamwins']
-# right now it ends up going by team_id alphanumerically. so iterate across ^^^^ rather than
-# across winloss
- print("--", playername, "TEAM WINS --")
- #for x in winloss:
-  # check team id against list of teams each player owns
- # if (x[3] in [z[1] for z in players[i]["teamwins"]]):
- #  print("The", x[0], "have", x[1], "wins.")
-
-#make this work by using wldict
+ print("<h1>", playername, "TEAM WINS </h1>")
  tot=0
  for team in players[i]['teamwins']:
      name=wldict[team[1]]['name']
      wins=wldict[team[1]]['wins']
      tot+=wins
      print("The", name, "have", wins, "wins." )
- print(tot, "total team wins\n")
+ print("<p>" + str(tot), "total team wins\n")
 
-#stupid html formatting for now
+#stupid html formatting for <s>now</s> EVER
 print("</pre>")
