@@ -157,7 +157,7 @@ print("<pre>")
 loops
 '''
 
-for i in range(2):
+for i in range(3):
  playername = playernames[i]
  print("-- " + playername + " HOMERS --")
 # tot = 0
