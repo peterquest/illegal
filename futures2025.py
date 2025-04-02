@@ -7,10 +7,13 @@
 ## TO DO:
 ##   DONE. update team info for 2025
 ##   DONE. correctly evaluate rules: top 2!
-##   2. clean up formatting of print() output
+##   DONE. clean up formatting of print() output
 ##   3. tracker/countdown for all bets
+##   3.5  team win pace vs wintotal
+##   3.5.1 first half wintotal pace
 ##   4. include draft position next to player listings
-##
+##   5. add css or something.
+##   6. further prettify....
 
 import logging
 import datetime
@@ -116,24 +119,26 @@ SPENDER'S SQUADS
 # Yordan, Alonso, Devers, Henderson
 
 spender = {} 
-spender ["teamwins"] = [["Dodgers", 119],["Asstros", 117],["Twins", 142],["Rays", 139],["Giants", 137]]
-spender ["pitcherwins"] = [["Valdez", 664285],["Castillo", 622491],["Cease", 656302],["Crochet", 676979]]
-spender ["homers"] = [["Yordan", 670541],["Alonso", 624413],["Devers", 646240]]#,["Henderson", 683002]] gunnar needs to play a game
+spender["teamwins"] = [["Dodgers", 119],["Asstros", 117],["Twins", 142],["Rays", 139],["Giants", 137]]
+spender["pitcherwins"] = [["Valdez", 664285],["Castillo", 622491],["Cease", 656302],["Crochet", 676979]]
+spender["homers"] = [["Yordan", 670541],["Alonso", 624413],["Devers", 646240]]#,["Henderson", 683002]] gunnar needs to play a game
 
+
+
+#formatting,
 players = [pete, batman, cueto, warren, spender]
 playernames = ["PETE", "BATMAN", "CUETO", "WARREN", "SPENDER"]
 standings = mlb.standings_data(leagueId="103,104", division="all", include_wildcard=False, season=None, standingsTypes=None, date=None)
 
-# for each team in totals list, get their current w-l, pace, and compare to total
-
-
-
-
+# for each team in totals list, get their current w-l, pace, and compare to totals
 
 #build our own wintotals list.
 #do this to just simplify the references to wins/losses
 #should look like [(name, id, w, l)]
+#there is definitely a more elegant way to do this..
+# zip map whatev
 
+wldict = {}
 winloss = []
 #check each division
 for i in range(6):
@@ -145,6 +150,9 @@ for i in range(6):
    teamlosses = standings[200+i]['teams'][j]['l']
    winloss.append((teamname, teamwins, teamlosses, team_id))
 
+# make a dict here instead?
+#   entry = { 'id': team_id, 'name': teamname, 'wins': teamwins, 'losses': teamlosses }
+   
 #   teampace   = str(round((teamwins / (teamwins+teamlosses)) * 162.0, 2))
 #   line       = totals[team_id]['line']
 #   print(totals[team_id]['team'])
@@ -162,32 +170,29 @@ for i in range(3):
  print("-- " + playername + " HOMERS --")
 # tot = 0
  for x in players[i]['homers']:
-  print(x[0])
   num = mlb.player_stat_data(x[1],'hitting','season')['stats'][0]['stats']['homeRuns']
   x.append(num)
-  print(num)
- # tot += num  DO THIS LATER
- 
 
  players[i]['homers']= sorted(players[i]['homers'], key=lambda i: i[2], reverse=True)
  tot=players[i]['homers'][0][2]+players[i]['homers'][1][2]
- print(players[i]['homers'][0:2])
- print("<s>", players[i]['homers'][2:], "</s>")
+ print(players[i]['homers'][0][0], players[i]['homers'][0][2])
+ print(players[i]['homers'][1][0], players[i]['homers'][1][2])
+ print("<s>", players[i]['homers'][2][0], players[i]['homers'][2][2],"</s>")
+ print("<s>", players[i]['homers'][3][0], players[i]['homers'][3][2],"</s>")
  print("total homers:", tot)
 
  print("-- " + playername + " PITCHER WINS --")
  #tot = 0
  for x in players[i]['pitcherwins']:
-  print (x[0])
   num = mlb.player_stat_data(x[1],'pitching','season')['stats'][0]['stats']['wins']
   x.append(num)
-  print(num)
-#  tot += num
 
  players[i]['pitcherwins']=sorted(players[i]['pitcherwins'], key=lambda i: i[2],reverse=True)
  tot=players[i]['pitcherwins'][0][2]+players[i]['pitcherwins'][1][2]
- print(players[i]['pitcherwins'][0:2])
- print("<s>", players[i]['pitcherwins'][2:], "</s>")
+ print(players[i]['pitcherwins'][0][0], players[i]['pitcherwins'][0][2])
+ print(players[i]['pitcherwins'][1][0], players[i]['pitcherwins'][1][2])
+ print("<s>", players[i]['pitcherwins'][2][0], players[i]['pitcherwins'][2][2],"</s>")
+ print("<s>", players[i]['pitcherwins'][3][0], players[i]['pitcherwins'][3][2],"</s>")
  print("total pitcher wins:", tot)
 
 #change this so the order follows the draft order established in players[i]['teamwins']
@@ -198,22 +203,13 @@ for i in range(3):
  for x in winloss:
   # check team id against list of teams each player owns
   if (x[3] in [z[1] for z in players[i]["teamwins"]]):
-   print(x[0], "have", x[1], "wins.")
+   print("The", x[0], "have", x[1], "wins.")
    tot+=x[1]
  print(tot, "total team wins\n")
 
-
-
-'''
-# get relevant win total data out of standings in a way that's easier to access by ID
-#for i in 6:
-# for 
-
-#print('The A\'s won %s games in 2024.' % sum(1 for x in mlb.schedule(team=133,start_date='03/01/2024',end_date='04/08/2024') if (x.get('winning_team','')=='Oakland Athletics') and x.get('game_type','')=='R'))
-
-'''
-
-
-
+#make this work by using wldict
+ for team in players[i]['teamwins']:
+     if (team[1] in [z[3] for z in winloss]):
+         print(team, "yep")
 #stupid html formatting for now
 print("</pre>")
